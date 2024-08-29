@@ -12,6 +12,10 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 
+console.log("Test Deployment", process.env);
+console.warn("Test Deployment", process.env);
+console.error("Test Deployment", process.env);
+
 // Initialize Telegram Bot
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN as string, {
     polling: true,
@@ -21,8 +25,8 @@ const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN as string, {
 
 // Initialize Redis client
 const redisClient = createClient({
-    url: process.env.PRODUCTS_REST_API_URL,
-    token: process.env.PRODUCTS_REST_API_TOKEN,
+    url: process.env.KV_REST_API_URL,
+    token: process.env.KV_REST_API_TOKEN,
 });
 
 let GLOBAL_SYMBOL_SAVED = 'btcusdt';

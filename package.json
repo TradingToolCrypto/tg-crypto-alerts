@@ -1,8 +1,8 @@
 {
-  "name": "yarn",
+  "name": "tg-crypto-alerts",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "dev": "npx ts-node local.ts",
     "start": "npx ts-node index.ts"
