@@ -1,6 +1,7 @@
 # API Leys
 *.env
 env
+*.env.*
 # AMM preset configuration
 Constants.json
 

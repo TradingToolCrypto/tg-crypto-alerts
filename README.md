@@ -19,3 +19,7 @@ Telegram users can set alerts on any crypto asset with a target above or below c
 - ```/below <symbol> <price>``` : setup alerts
 - ```/delete_<symbol> ``` : delete alerts with action button
 - ```/reset <symbol> ``` : deletes both alerts
+
+# vercel 
+- ```yarn add @vercel/kv```
+- ```yarn global add vercel@latest```

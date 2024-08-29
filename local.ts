@@ -1,6 +1,5 @@
 
 // @ts-nocheck
-import { createClient } from '@vercel/kv';
 import express, { Request, Response } from 'express';
 import TelegramBot from 'node-telegram-bot-api';
 import WebSocket from 'ws';
@@ -10,7 +9,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3002;
 
 // Initialize Telegram Bot
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN as string, {
@@ -18,11 +17,25 @@ const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN as string, {
     filepath: false,
 });
 
-
 // Initialize Redis client
 const redisClient = createClient({
-    url: process.env.PRODUCTS_REST_API_URL,
-    token: process.env.PRODUCTS_REST_API_TOKEN,
+    url: process.env.REDIS_URL
+});
+
+// Function to connect to Redis with retries
+const connectRedis = async () => {
+    try {
+        await redisClient.connect();
+        console.log('Connected to Redis');
+    } catch (error) {
+        console.error('Failed to connect to Redis:', error);
+    }
+};
+
+connectRedis();
+
+redisClient.on('error', (err) => {
+    console.error('Redis connection error:', err);
 });
 
 let GLOBAL_SYMBOL_SAVED = 'btcusdt';
@@ -40,7 +53,10 @@ const sendAlert = async (userId: number, message: string, symbol: string): Promi
 // Function to handle new price updates
 const handlePriceUpdate = async (symbol: string, price: number): Promise<void> => {
     try {
-       
+        if (!redisClient.isOpen) {
+            await redisClient.connect();
+        }
+
         const [alertsAbove, alertsBelow] = await Promise.all([
             redisClient.hGetAll('alert_above'),
             redisClient.hGetAll('alert_below'),
