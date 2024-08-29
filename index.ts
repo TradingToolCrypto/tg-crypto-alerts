@@ -23,7 +23,13 @@ const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN as string);
 app.use(express.json());
 
 // Setup the Telegram webhook route
-app.post(`/bot${process.env.TELEGRAM_BOT_TOKEN}`, (req, res) => {
+// app.post(`/bot${process.env.TELEGRAM_BOT_TOKEN}`, (req, res) => {
+//     bot.processUpdate(req.body);
+//     res.sendStatus(200);
+// });
+
+// Setup the Telegram webhook route
+app.post('/webhook', (req, res) => {
     bot.processUpdate(req.body);
     res.sendStatus(200);
 });
@@ -247,3 +253,4 @@ const shutdown = async () => {
 
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
+

@@ -23,3 +23,8 @@ Telegram users can set alerts on any crypto asset with a target above or below c
 # vercel 
 - ```yarn add @vercel/kv```
 - ```yarn global add vercel@latest```
+
+Ouch 
+- Can't do polling with TG bot
+- Can't use websockets (serverless, stateless), 
+- can only do a cron job probably: not tested yet
