@@ -127,10 +127,12 @@ ws.on('close', () => {
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 
-    await setWebhook(); // Set the webhook when the server starts
-
+   
 
 });
+
+setWebhook(); // Set the webhook when the server starts
+
 
 bot.onText(/\/above (.+) (.+)/, async (msg, match) => {
     handleUserAlert(msg.chat.id, match, 'alert_above');
