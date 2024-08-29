@@ -29,6 +29,22 @@ const redisClient = createClient({
     token: process.env.KV_REST_API_TOKEN,
 });
 
+// Function to connect to Redis with retries
+const connectRedis = async () => {
+    try {
+        await redisClient.connect();
+        console.log('Connected to Redis');
+    } catch (error) {
+        console.error('Failed to connect to Redis:', error);
+    }
+};
+
+connectRedis();
+
+redisClient.on('error', (err) => {
+    console.error('Redis connection error:', err);
+});
+
 let GLOBAL_SYMBOL_SAVED = 'btcusdt';
 
 // Function to send an alert message to a user
@@ -44,7 +60,7 @@ const sendAlert = async (userId: number, message: string, symbol: string): Promi
 // Function to handle new price updates
 const handlePriceUpdate = async (symbol: string, price: number): Promise<void> => {
     try {
-       
+
         const [alertsAbove, alertsBelow] = await Promise.all([
             redisClient.hGetAll('alert_above'),
             redisClient.hGetAll('alert_below'),
@@ -115,7 +131,7 @@ app.listen(port, () => {
 
     bot.onText(/\/list/, async (msg) => {
         const chatId = msg.chat.id;
-        const chatUser = msg.from.username;    
+        const chatUser = msg.from.username;
         listUserAlerts(chatId, chatUser);
     });
 });
