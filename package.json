@@ -5,8 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "dev": "npx ts-node local.ts",
-    "start": "npx ts-node index.ts",
-    "vercel-build": "echo hello"
+    "start": "npx ts-node index.ts"
   },
   "author": "",
   "license": "ISC",
