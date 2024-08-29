@@ -47,7 +47,7 @@ const setWebhook = async () => {
     }
 };
 
-await setWebhook(); // Set the webhook when the server starts
+setWebhook(); // Set the webhook when the server starts
 
 
 
@@ -135,7 +135,7 @@ app.listen(port, (resp) => {
         const chatUser = msg.from.username;
         listUserAlerts(chatId, chatUser);
     });
-   
+
 
 });
 
