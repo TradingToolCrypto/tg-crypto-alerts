@@ -17,10 +17,35 @@ console.warn("Test Deployment", process.env);
 console.error("Test Deployment", process.env);
 
 // Initialize Telegram Bot
-const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN as string, {
-    polling: true,
-    filepath: false,
+const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN as string);
+
+// Parse incoming requests as JSON
+app.use(express.json());
+
+// Setup the Telegram webhook route
+app.post(`/bot${process.env.TELEGRAM_BOT_TOKEN}`, (req, res) => {
+    bot.processUpdate(req.body);
+    res.sendStatus(200);
 });
+
+// Set the webhook URL
+// bot.setWebHook(`${process.env.VERCEL_URL}/bot${process.env.TELEGRAM_BOT_TOKEN}`);
+// Set up your webhook with Telegram
+const setWebhook = async () => {
+    const webhookUrl = `${process.env.VERCEL_URL}`; // Replace with your domain
+    const url = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/setWebhook?url=${webhookUrl}`;
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.ok) {
+            console.log('Webhook set successfully');
+        } else {
+            console.error('Error setting webhook:', data.description);
+        }
+    } catch (err) {
+        console.error('Failed to set webhook:', err);
+    }
+};
 
 
 // Initialize Redis client
@@ -102,25 +127,28 @@ ws.on('close', () => {
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 
-    bot.onText(/\/above (.+) (.+)/, async (msg, match) => {
-        handleUserAlert(msg.chat.id, match, 'alert_above');
-    });
+    await setWebhook(); // Set the webhook when the server starts
 
-    bot.onText(/\/below (.+) (.+)/, async (msg, match) => {
-        handleUserAlert(msg.chat.id, match, 'alert_below');
-    });
 
-    bot.onText(/\/delete_(.+)/, async (msg, match) => {
-        deleteUserAlert(msg.chat.id, match[1].toUpperCase());
-    });
-
-    bot.onText(/\/list/, async (msg) => {
-        const chatId = msg.chat.id;
-        const chatUser = msg.from.username;
-        listUserAlerts(chatId, chatUser);
-    });
 });
 
+bot.onText(/\/above (.+) (.+)/, async (msg, match) => {
+    handleUserAlert(msg.chat.id, match, 'alert_above');
+});
+
+bot.onText(/\/below (.+) (.+)/, async (msg, match) => {
+    handleUserAlert(msg.chat.id, match, 'alert_below');
+});
+
+bot.onText(/\/delete_(.+)/, async (msg, match) => {
+    deleteUserAlert(msg.chat.id, match[1].toUpperCase());
+});
+
+bot.onText(/\/list/, async (msg) => {
+    const chatId = msg.chat.id;
+    const chatUser = msg.from.username;
+    listUserAlerts(chatId, chatUser);
+});
 // Function to handle user alerts
 const handleUserAlert = async (chatId: number, match: RegExpExecArray | null, alertType: 'alert_above' | 'alert_below') => {
     if (!match) return;

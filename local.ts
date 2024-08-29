@@ -24,6 +24,20 @@ const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN as string, {
     filepath: false,
 });
 
+// Debug function to check Telegram bot connection
+const debugTelegramConnection = async (chatId: number) => {
+    try {
+        // Test sending a message to a specific chat
+        const message = await bot.sendMessage(chatId, '✅ Telegram bot connection is working!');
+        console.log('Debug message sent:', message);
+    } catch (error) {
+        console.error('Failed to send debug message:', error);
+    }
+};
+
+// Example usage: Replace with your actual Telegram chat ID
+debugTelegramConnection(-1002039904415);
+
 // Initialize Redis client
 const redisClient = createClient({
     url: process.env.REDIS_URL
@@ -134,6 +148,7 @@ app.listen(port, () => {
 
     bot.onText(/\/list/, async (msg) => {
         const chatId = msg.chat.id;
+        console.log("chat id", chatId);
         const chatUser = msg.from.username;
         listUserAlerts(chatId, chatUser);
     });
