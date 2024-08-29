@@ -47,6 +47,9 @@ const setWebhook = async () => {
     }
 };
 
+await setWebhook(); // Set the webhook when the server starts
+
+
 
 // Initialize Redis client
 const redisClient = createClient({
@@ -124,14 +127,18 @@ ws.on('close', () => {
 });
 
 // Express server start
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+app.listen(port, (resp) => {
+    console.log(`Server is running on port ${port} : ${resp}`);
 
+    bot.onText(/\/list/, async (msg) => {
+        const chatId = msg.chat.id;
+        const chatUser = msg.from.username;
+        listUserAlerts(chatId, chatUser);
+    });
    
 
 });
 
-setWebhook(); // Set the webhook when the server starts
 
 
 bot.onText(/\/above (.+) (.+)/, async (msg, match) => {
