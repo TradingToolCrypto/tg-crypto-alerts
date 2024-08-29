@@ -29,21 +29,6 @@ const redisClient = createClient({
     token: process.env.KV_REST_API_TOKEN,
 });
 
-// Function to connect to Redis with retries
-const connectRedis = async () => {
-    try {
-        await redisClient.connect();
-        console.log('Connected to Redis');
-    } catch (error) {
-        console.error('Failed to connect to Redis:', error);
-    }
-};
-
-connectRedis();
-
-redisClient.on('error', (err) => {
-    console.error('Redis connection error:', err);
-});
 
 let GLOBAL_SYMBOL_SAVED = 'btcusdt';
 
