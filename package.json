@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx ts-node index.ts"
+    "dev": "npx ts-node local.ts",
+    "start": "npx ts-node index.ts"
   },
   "author": "",
   "license": "ISC",
@@ -18,6 +19,7 @@
     "dotenv": "^16.0.0",
     "express": "^4.18.1",
     "node-telegram-bot-api": "^0.61.0",
+    "path": "^0.12.7",
     "redis": "^4.7.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4",
